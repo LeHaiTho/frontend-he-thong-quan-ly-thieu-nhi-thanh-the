@@ -53,7 +53,8 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import api from '../utils/api';
-import { resolveMediaUrl, toStoredMediaPath } from '../utils/mediaUrl';
+import { toStoredMediaPath } from '../utils/mediaUrl';
+import { getAvatarSrc } from '../utils/defaultAvatar';
 
 
 const { Title, Text } = Typography;
@@ -386,8 +387,9 @@ const Teachers = () => {
                       <Avatar
                         shape="square"
                         size={120}
-                        src={resolveMediaUrl(selectedTeacher.avatar_url) || "../src/assets/user.png"}
-                        style={{ border: '4px solid #595959', borderRadius: 4 }}
+                        src={getAvatarSrc(selectedTeacher?.avatar_url)}
+                        icon={<UserOutlined />}
+                        style={{ border: '4px solid #595959', borderRadius: 4, cursor: 'default' }}
                       />
                       <div style={{ position: 'absolute', top: 5, left: 15 }}>
                         <Upload

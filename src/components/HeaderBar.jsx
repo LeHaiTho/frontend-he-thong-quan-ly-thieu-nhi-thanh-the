@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getAvatarSrc } from '../utils/defaultAvatar';
 
 const { Header } = Layout;
 
@@ -64,7 +65,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
       <Space size="large">
         <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
           <Space style={{ cursor: 'pointer' }}>
-            <Avatar src="../src/assets/user.png" />
+            <Avatar src={getAvatarSrc(user?.avatar_url)} icon={<UserOutlined />} />
             <span style={{ fontWeight: 500 }}>{user?.name || 'User'}</span>
           </Space>
         </Dropdown>
