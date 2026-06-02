@@ -45,6 +45,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import api from '../utils/api';
+import { resolveMediaUrl, toStoredMediaPath } from '../utils/mediaUrl';
 import * as XLSX from 'xlsx';
 
 const { Title, Text } = Typography;
@@ -430,13 +431,14 @@ const Students = () => {
 
   const handleUpload = (info) => {
     if (info.file.status === 'done') {
-      const imageUrl = info.file.response?.data?.url;
-      if (!imageUrl) {
+      const payload = info.file.response?.data;
+      const storedPath = toStoredMediaPath(payload?.path || payload?.url);
+      if (!storedPath) {
         message.error('Không nhận được URL ảnh từ server');
         return;
       }
-      form.setFieldsValue({ avatar_url: imageUrl });
-      setSelectedStudent((prev) => ({ ...prev, avatar_url: imageUrl }));
+      form.setFieldsValue({ avatar_url: storedPath });
+      setSelectedStudent((prev) => (prev ? { ...prev, avatar_url: storedPath } : prev));
       message.success('Tải ảnh lên thành công');
     } else if (info.file.status === 'error') {
       const errMsg =
@@ -458,6 +460,7 @@ const Students = () => {
           : record.gender;
     form.setFieldsValue({
       ...record,
+      avatar_url: toStoredMediaPath(record.avatar_url) ?? record.avatar_url,
       gender: genderNorm,
       dob: record.dob ? dayjs(record.dob) : null,
       baptism_date: record.baptism_date ? dayjs(record.baptism_date) : null,
@@ -663,7 +666,7 @@ const Students = () => {
                     <Avatar
                       shape="square"
                       size={120}
-                      src={selectedStudent?.avatar_url || "../src/assets/user.png"}
+                      src={resolveMediaUrl(selectedStudent?.avatar_url) || "../src/assets/user.png"}
                       style={{ border: '4px solid #595959', borderRadius: 4 }}
                     />
                     <div style={{ position: 'absolute', top: 5, left: 15 }}>

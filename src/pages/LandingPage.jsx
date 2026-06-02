@@ -4,6 +4,7 @@ import { Input, Button, Card, Space, Tag, Tabs, Table, Avatar, QRCode, Descripti
 import { SearchOutlined, LoginOutlined, CalendarOutlined, SolutionOutlined, IdcardOutlined, BookOutlined, UserOutlined, PrinterOutlined, CheckCircleOutlined, InfoCircleOutlined, PlaySquareOutlined, AppleOutlined, AndroidOutlined, CommentOutlined, SendOutlined, CloseOutlined, RobotOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { resolveMediaUrl } from '../utils/mediaUrl';
 import dayjs from 'dayjs';
 
 const { Title, Text, Paragraph } = Typography;
@@ -218,7 +219,7 @@ const LandingPage = () => {
                     <div className="profile-left">
                       <Avatar
                         size={120}
-                        src={studentData.student.avatar_url || null}
+                        src={resolveMediaUrl(studentData.student.avatar_url) || null}
                         icon={!studentData.student.avatar_url ? <UserOutlined /> : null}
                         className="profile-avatar"
                       />

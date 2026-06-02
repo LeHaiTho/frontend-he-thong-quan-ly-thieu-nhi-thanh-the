@@ -53,6 +53,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import api from '../utils/api';
+import { resolveMediaUrl, toStoredMediaPath } from '../utils/mediaUrl';
 
 
 const { Title, Text } = Typography;
@@ -102,6 +103,7 @@ const Teachers = () => {
     setSelectedTeacher(record);
     form.setFieldsValue({
       ...record,
+      avatar_url: toStoredMediaPath(record.avatar_url) ?? record.avatar_url,
       dob: record.dob ? dayjs(record.dob) : null,
       baptism_date: record.baptism_date ? dayjs(record.baptism_date) : null,
       first_communion_date: record.first_communion_date ? dayjs(record.first_communion_date) : null,
@@ -189,13 +191,14 @@ const Teachers = () => {
 
   const handleUpload = (info) => {
     if (info.file.status === 'done') {
-      const imageUrl = info.file.response?.data?.url;
-      if (!imageUrl) {
+      const payload = info.file.response?.data;
+      const storedPath = toStoredMediaPath(payload?.path || payload?.url);
+      if (!storedPath) {
         message.error('Không nhận được URL ảnh từ server');
         return;
       }
-      form.setFieldsValue({ avatar_url: imageUrl });
-      setSelectedTeacher((prev) => ({ ...prev, avatar_url: imageUrl }));
+      form.setFieldsValue({ avatar_url: storedPath });
+      setSelectedTeacher((prev) => (prev ? { ...prev, avatar_url: storedPath } : prev));
       message.success('Tải ảnh lên thành công');
     } else if (info.file.status === 'error') {
       const errMsg =
@@ -383,7 +386,7 @@ const Teachers = () => {
                       <Avatar
                         shape="square"
                         size={120}
-                        src={selectedTeacher.avatar_url || "../src/assets/user.png"}
+                        src={resolveMediaUrl(selectedTeacher.avatar_url) || "../src/assets/user.png"}
                         style={{ border: '4px solid #595959', borderRadius: 4 }}
                       />
                       <div style={{ position: 'absolute', top: 5, left: 15 }}>
